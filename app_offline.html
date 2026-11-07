@@ -73,6 +73,7 @@ footer{text-align:center;margin:20px 0;color:#888;font-size:.85rem}
 </div>
 <button onclick="logout()">Sair</button>
 </div>
+<div class="card"><h2>Relatório para Polícia (Pix golpe)</h2><input id="rnome" placeholder="Seu nome"><input id="rcpf" placeholder="Seu CPF"><input id="rgolpista" placeholder="Nome/contato do golpista"><input id="rvalor" placeholder="Valor (R$)"><textarea id="rdesc" placeholder="Relato (cronologia)"></textarea><button onclick="genReport()">Gerar relatório</button><div id="reportout"></div></div>
 <footer>Criado por Yuri Gomes Junior — Instagram <a href="https://instagram.com/yuripiaui" target="_blank">@yuripiaui</a></footer>
 <script>
 const K='rv_data2'; function load(){return JSON.parse(localStorage.getItem(K)||'{"users":[],"bookings":[],"seq":1,"lock":"1234"}');}
@@ -90,6 +91,7 @@ function renderAdmin(){const d=load();const tb=document.querySelector('#t tbody'
 renderAnalytics();}
 function setStatus(id,st){const d=load();const b=d.bookings.find(x=>x.id===id);if(!b)return;if(st==='confirmed'){const code=prompt('Digite a senha da fechadura para o hóspede:');if(!code)return;b.code=code;}b.status=st;save(d);renderAdmin();renderClient();}
 function setLock(){const d=load();d.lock=lockcode.value;save(d);lockmsg.textContent='Senha padrão salva: '+d.lock;}
+function genReport(){const html=`<h3>Relatório de Ocorrência - Golpe Pix</h3><p><b>Vítima:</b> ${rnome.value} (CPF ${rcpf.value})</p><p><b>Golpista:</b> ${rgolpista.value}</p><p><b>Valor:</b> R$ ${rvalor.value}</p><p><b>Relato:</b> ${rdesc.value}</p><p><b>Data:</b> ${new Date().toLocaleString()}</p><button onclick="window.print()">Imprimir / Salvar PDF</button>`;reportout.innerHTML=html;}
 function trackClick(tag){const d=load();d.clicks=d.clicks||[];fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(j=>{d.clicks.push({tag,ip:j.ip,ts:new Date().toISOString()});save(d);renderAnalytics();}).catch(()=>{d.clicks.push({tag,ip:'desconhecido',ts:new Date().toISOString()});save(d);renderAnalytics();});}
 function renderAnalytics(){const d=load();const clicks=d.clicks||[];analytics.innerHTML=`Cliques: ${clicks.length}<br>`+clicks.slice(-10).map(c=>`${c.ts} - ${c.tag} - ${c.ip}`).join('<br>');}
 </script></body></html>
