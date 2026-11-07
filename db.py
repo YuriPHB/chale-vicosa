@@ -41,14 +41,7 @@ def init_db():
     );
     """)
     # seed admin if none
-    c.execute("SELECT COUNT(*) FROM users WHERE role='admin'")
-    if c.fetchone()[0] == 0:
-        salt = secrets.token_hex(16)
-        pw = "BrasilRadio"
-        h, salt = hash_password(pw, salt)
-        from datetime import datetime
-        c.execute("INSERT INTO users (name,email,password_hash,salt,role,created_at) VALUES (?,?,?,?,?,?)",
-                  ("Administrador","admin@chalevicosa.com",h,salt,"admin",datetime.now().isoformat()))
+    # Sem senha padrao no codigo. O primeiro usuario cadastrado vira admin.
     conn.commit()
     conn.close()
 

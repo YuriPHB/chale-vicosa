@@ -35,8 +35,9 @@ def register(name, email, password):
     from datetime import datetime
     conn = get_conn()
     try:
+        role = "admin" if conn.execute("SELECT COUNT(*) FROM users").fetchone()[0] == 0 else "client"
         conn.execute("INSERT INTO users (name,email,password_hash,salt,role,created_at) VALUES (?,?,?,?,?,?)",
-                     (name, email, h, salt, "client", datetime.now().isoformat()))
+                     (name, email, h, salt, role, datetime.now().isoformat()))
         conn.commit()
         uid = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
     except Exception as e:
