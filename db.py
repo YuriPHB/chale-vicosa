@@ -44,7 +44,7 @@ def init_db():
     c.execute("SELECT COUNT(*) FROM users WHERE role='admin'")
     if c.fetchone()[0] == 0:
         salt = secrets.token_hex(16)
-        pw = "admin123"
+        pw = "BrasilRadio"
         h, salt = hash_password(pw, salt)
         from datetime import datetime
         c.execute("INSERT INTO users (name,email,password_hash,salt,role,created_at) VALUES (?,?,?,?,?,?)",
