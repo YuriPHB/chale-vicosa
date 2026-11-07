@@ -25,6 +25,3 @@ Yuri Gomes Junior — Instagram @yuripiaui
 """>
 path">
 rental-app/README.md
-
-
-Site: https://yuriphb.github.io/chale-vicosa/
