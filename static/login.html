@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><title>Login</title>
+<style>body{font-family:Arial;background:#f5f7fa;display:flex;justify-content:center;padding-top:60px}form{background:#fff;padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1);width:320px}input{width:100%;padding:10px;margin:8px 0;box-sizing:border-box}button{width:100%;padding:10px;background:#2c5f2d;color:#fff;border:none;border-radius:4px;cursor:pointer}</style></head>
+<body><form id="f"><h2>Entrar</h2>
+<input name="email" type="email" placeholder="E-mail" required>
+<input name="password" type="password" placeholder="Senha" required>
+<button type="submit">Entrar</button>
+<p id="msg"></p></form>
+<script>
+document.getElementById('f').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));
+const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
+const j=await r.json(); if(j.ok){window.location=j.role==='admin'?'/admin':'/dashboard';}else{document.getElementById('msg').textContent=j.error;}
+};
+</script></body></html>

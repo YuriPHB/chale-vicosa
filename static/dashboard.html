@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel Cliente</title>
+<style>
+:root{--g:#2c5f2d;--bg:#f5f7fa}
+*{box-sizing:border-box}
+body{font-family:system-ui,Arial;margin:0;padding:12px;background:var(--bg)}
+.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.08);margin-bottom:16px}
+h2{margin-top:0;color:var(--g)}
+input{width:100%;padding:10px;margin:6px 0;border:1px solid #ccc;border-radius:8px;font-size:1rem}
+button{padding:10px 14px;background:var(--g);color:#fff;border:none;border-radius:8px;cursor:pointer;margin:4px 2px}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+td,th{padding:8px;border-bottom:1px solid #eee;text-align:left}
+.wrap{overflow-x:auto}
+@media(max-width:600px){table{font-size:.8rem}}
+footer{text-align:center;margin:20px 0;color:#888;font-size:.85rem}
+</style></head>
+<body>
+<div class="card"><h2>Nova Reserva</h2>
+<form id="b">
+<label>Check-in</label><input type="date" name="checkin" required>
+<label>Check-out</label><input type="date" name="checkout" required>
+<label>Diária (R$ 400-450)</label><input type="number" name="daily_rate" min="400" max="450" value="400" required>
+<label>Observações</label><input name="notes">
+<button type="submit">Reservar</button></form>
+<p id="msg"></p></div>
+<div class="card"><h2>Minhas Reservas</h2><div class="wrap"><table id="t"><thead><tr><th>ID</th><th>Check-in</th><th>Check-out</th><th>Diária</th><th>Total</th><th>Status</th><th>Senha</th><th>Agenda</th></tr></thead><tbody></tbody></table></div></div>
+<div class="card"><h2>Viçosa do Ceará</h2><p>Valores de hospedagem: R$400 a R$450 por diária. Notícias e dicas da região em breve.</p><p><b>Indicação:</b> Padaria Pão da Vida — ótimo para café da manhã.</p></div>
+<footer>Criado por Yuri Gomes Junior — Instagram <a href="https://instagram.com/yuripiaui" target="_blank">@yuripiaui</a></footer>
+<script>
+async function load(){const r=await fetch('/api/bookings');const j=await r.json();const tb=document.querySelector('#t tbody');tb.innerHTML='';
+(j.bookings||[]).forEach(b=>{tb.innerHTML+=`<tr><td>${b.id}</td><td>${b.checkin}</td><td>${b.checkout}</td><td>R$${b.daily_rate}</td><td>R$${b.total}</td><td>${b.status}</td><td>${b.lock_code||'-'}</td><td><a href="/api/calendar/${b.id}">ICS</a></td></tr>`;});}
+document.getElementById('b').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));
+const r=await fetch('/api/book',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
+const j=await r.json();document.getElementById('msg').textContent=j.ok?`Reserva #${j.booking_id} criada. ${j.nights} noites. Total R$${j.total}. Senha fechadura: ${j.lock_code}`:j.error;if(j.ok)load();};
+load();
+</script></body></html>

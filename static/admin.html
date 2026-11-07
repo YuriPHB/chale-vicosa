@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel Admin</title>
+<style>
+:root{--g:#2c5f2d;--bg:#f5f7fa}
+*{box-sizing:border-box}
+body{font-family:system-ui,Arial;margin:0;padding:12px;background:var(--bg)}
+.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.08);margin-bottom:16px}
+h2{margin-top:0;color:var(--g)}
+button{padding:8px 12px;margin:2px;background:var(--g);color:#fff;border:none;border-radius:8px;cursor:pointer}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+td,th{padding:8px;border-bottom:1px solid #eee;text-align:left}
+.wrap{overflow-x:auto}
+@media(max-width:600px){table{font-size:.8rem}}
+footer{text-align:center;margin:20px 0;color:#888;font-size:.85rem}
+</style></head>
+<body>
+<div class="card"><h2>Relatório</h2><div id="rep"></div></div>
+<div class="card"><h2>Reservas</h2><div class="wrap"><table id="t"><thead><tr><th>ID</th><th>Cliente</th><th>Check-in</th><th>Check-out</th><th>Total</th><th>Status</th><th>Senha</th><th>Ações</th></tr></thead><tbody></tbody></table></div></div>
+<div class="card"><h2>Alterar senha</h2><form id="cp"><input type="password" name="old_password" placeholder="Senha atual" required><input type="password" name="new_password" placeholder="Nova senha" required><button type="submit">Alterar</button></form><p id="cpmsg"></p></div>
+<footer>Criado por Yuri Gomes Junior — Instagram <a href="https://instagram.com/yuripiaui" target="_blank">@yuripiaui</a></footer>
+<script>
+async function load(){const r=await fetch('/api/bookings');const j=await r.json();const tb=document.querySelector('#t tbody');tb.innerHTML='';
+(j.bookings||[]).forEach(b=>{tb.innerHTML+=`<tr><td>${b.id}</td><td>${b.client_name||b.user_id}</td><td>${b.checkin}</td><td>${b.checkout}</td><td>R$${b.total}</td><td>${b.status}</td><td>${b.lock_code||'-'}</td><td><button onclick="act('confirm',${b.id})">Confirmar</button><button onclick="act('cancel',${b.id})">Cancelar</button> <a href="/api/calendar/${b.id}">ICS</a></td></tr>`;});}
+async function act(a,id){await fetch('/api/'+a,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});load();loadRep();}
+async function loadRep(){const r=await fetch('/api/report');const j=await r.json();document.getElementById('rep').innerHTML=`Receita: R$${j.revenue} | Reservas: ${j.total_bookings} (confirmadas ${j.confirmed}, pendentes ${j.pending}, canceladas ${j.cancelled}) | Clientes: ${j.clients} | Noites: ${j.nights}`;}
+document.getElementById('cp').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const r=await fetch('/api/change_password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});const j=await r.json();document.getElementById('cpmsg').textContent=j.ok?'Senha alterada!':j.error;};
+load();loadRep();
+</script></body></html>
