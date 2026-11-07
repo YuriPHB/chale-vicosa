@@ -34,6 +34,7 @@ footer{text-align:center;margin:20px 0;color:#888;font-size:.85rem}
 <span class="amenity">Estacionamento</span>
 <p><b>Importante:</b> o hóspede deve levar roupa de cama e toalha.</p>
 </div>
+<div class="card"><h2>Previsão do tempo - Viçosa CE</h2><div id="weather">Carregando...</div></div>
 <div class="card">
 <h2>Fotos da cidade</h2>
 <div class="gallery">
@@ -87,4 +88,5 @@ function setStatus(id,st){const d=load();const b=d.bookings.find(x=>x.id===id);i
 function setLock(){const d=load();d.lock=lockcode.value;save(d);lockmsg.textContent='Senha padrão salva: '+d.lock;}
 function trackClick(tag){const d=load();d.clicks=d.clicks||[];fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(j=>{d.clicks.push({tag,ip:j.ip,ts:new Date().toISOString()});save(d);renderAnalytics();}).catch(()=>{d.clicks.push({tag,ip:'desconhecido',ts:new Date().toISOString()});save(d);renderAnalytics();});}
 function renderAnalytics(){const d=load();const clicks=d.clicks||[];analytics.innerHTML=`Cliques: ${clicks.length}`;}
+fetch('https://api.open-meteo.com/v1/forecast?latitude=-3.565&longitude=-41.092&current_weather=true').then(r=>r.json()).then(j=>{const w=j.current_weather;weather.innerHTML=`Temperatura: ${w.temperature}°C | Vento: ${w.windspeed} km/h`;}).catch(()=>{weather.textContent='Indisponível';});
 </script></body></html>
