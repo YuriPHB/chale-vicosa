@@ -4,7 +4,7 @@ from auth import login, register, create_session, get_session, destroy_session
 from db import hash_password
 
 import os as _os
-PORT = int(_os.environ.get("PORT", 8002))
+PORT = int(_os.environ.get("PORT", 8000))
 BASE = os.path.dirname(__file__)
 
 def read_body(handler):
